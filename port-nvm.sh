@@ -88,10 +88,18 @@ portnvm_install_latest_npm() {
   if [ $1 -lt 10 ]; then
     NPM_PORT="npm6"
   elif [ $1 -lt 16 ]; then
-    if [ $1 -eq 12 ] || [ $1 -eq 14 ]; then
+    if [ $1 -eq 14 ]; then
+      NPM_PORT="npm9"
+    elif [ $1 -eq 12 ]; then
       NPM_PORT="npm8"
     else
       NPM_PORT="npm7"
+    fi
+  elif [ $1 -lt 19 ]; then
+    if [ $1 -eq 17 ]; then
+      NPM_PORT="npm8"
+    else
+      NPM_PORT="npm9"
     fi
   else
     NPM_PORT="$(port -q list name:^npm | tail -n 1 | awk '{print $1;}')"
