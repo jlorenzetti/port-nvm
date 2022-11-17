@@ -9,7 +9,7 @@ portnvm_is_version_active() {
     return 1
   fi
 
-  if [ $(port -q installed nodejs$1 | grep "(active)" | wc -l) -gt 0 ]; then
+  if [ "$(port -q installed nodejs"$1" and active | wc -l)" -gt 0 ]; then
     return 0
   fi
   return 1
@@ -20,7 +20,7 @@ portnvm_is_version_installed() {
     return 1
   fi
 
-  if [ $(port -q installed $(port -q list name:^nodejs$1 | tail -n 1 | awk '{print $1;}') | wc -l) -gt 0 ]; then
+  if [ "$(port -q installed "$(port -q list name:^nodejs"$1" | tail -n 1 | awk '{print $1;}')" | wc -l)" -gt 0 ]; then
     return 0
   fi
   return 1
@@ -31,7 +31,7 @@ portnvm_is_port_installed() {
     return 1
   fi
 
-  if [ $(port -q installed "$1" | wc -l) -gt 0 ]; then
+  if [ "$(port -q installed "$1" | wc -l)" -gt 0 ]; then
     return 0
   fi
   return 1
@@ -42,14 +42,14 @@ portnvm_is_version_inactive() {
     return 1
   fi
 
-  if [ $(port -q inactive $(port -q list name:^nodejs$1 | tail -n 1 | awk '{print $1;}') | wc -l) -gt 0 ]; then
+  if [ "$(port -q inactive "$(port -q list name:^nodejs"$1" | tail -n 1 | awk '{print $1;}')" | wc -l)" -gt 0 ]; then
     return 0
   fi
   return 1
 }
 
 portnvm_deactivate_npm() {
-  if [ $(port -q installed name:^npm and active | wc -l) -gt 0 ]; then
+  if [ "$(port -q installed name:^npm and active | wc -l)" -gt 0 ]; then
     echo "Deactivating npm…"
     for ACTIVE_NPM in $(port -q installed name:^npm and active | awk '{print $1;}'); do
       sudo port -q deactivate "${ACTIVE_NPM}" || return 1
@@ -61,11 +61,11 @@ portnvm_deactivate_npm() {
 portnvm_deactivate_all() {
   portnvm_deactivate_npm || return 1
 
-  if [ $(port -q installed name:^nodejs and active | wc -l) -gt 0 ]; then
+  if [ "$(port -q installed name:^nodejs and active | wc -l)" -gt 0 ]; then
     for ACTIVE_PORT in $(port -q installed name:^nodejs and active | awk '{print $1;}'); do
-      if [ $(port -q installed dependentof:${ACTIVE_PORT} and active | wc -l) -gt 0 ]; then
+      if [ "$(port -q installed dependentof:"${ACTIVE_PORT}" and active | wc -l)" -gt 0 ]; then
         echo "Deactivating dependent ports of ${ACTIVE_PORT}…"
-        for ACTIVE_DEPENDENT in $(port -q installed dependentof:${ACTIVE_PORT} and active | awk '{print $1;}'); do
+        for ACTIVE_DEPENDENT in $(port -q installed dependentof:"${ACTIVE_PORT}" and active | awk '{print $1;}'); do
           sudo port -q deactivate "${ACTIVE_DEPENDENT}" || return 1
         done
       fi
@@ -85,18 +85,18 @@ portnvm_install_latest_npm() {
   portnvm_deactivate_npm || return 1
 
   echo 'Attempting to install the latest working version of npm…'
-  if [ $1 -lt 10 ]; then
+  if [ "$1" -lt 10 ]; then
     NPM_PORT="npm6"
-  elif [ $1 -lt 16 ]; then
-    if [ $1 -eq 14 ]; then
+  elif [ "$1" -lt 16 ]; then
+    if [ "$1" -eq 14 ]; then
       NPM_PORT="npm9"
-    elif [ $1 -eq 12 ]; then
+    elif [ "$1" -eq 12 ]; then
       NPM_PORT="npm8"
     else
       NPM_PORT="npm7"
     fi
-  elif [ $1 -lt 19 ]; then
-    if [ $1 -eq 17 ]; then
+  elif [ "$1" -lt 19 ]; then
+    if [ "$1" -eq 17 ]; then
       NPM_PORT="npm8"
     else
       NPM_PORT="npm9"
