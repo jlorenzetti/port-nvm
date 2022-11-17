@@ -116,7 +116,7 @@ portnvm_install_latest_npm() {
 
 if [ "$#" -lt 1 ]; then
   echo "Usage:"
-  echo "  port-nvm use [<version>]"
+  echo "  port-nvm activate [<version>]"
   return
 fi
 
